@@ -1,0 +1,49 @@
+{
+  "compilerOptions": {
+    // Store incremental build state here so "tsc -b" can skip re-checking unchanged files.
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
+    // Treat the code as ES2023; matches the syntax level Vite's build outputs.
+    "target": "es2023",
+    // Make all ES2023 built-ins plus the browser DOM available as global types.
+    "lib": ["ES2023", "DOM"],
+    // Author source as ES modules; Vite transpiles them for the browser.
+    "module": "esnext",
+    // Only load Vite's client types (e.g. asset imports); do not auto-include
+    // every package under node_modules/@types.
+    "types": ["vite/client"],
+    // Allow importing files with unknown extensions (e.g. CSS, images) as long
+    // as an ambient declaration file describes them.
+    "allowArbitraryExtensions": true,
+    // Skip type-checking of third-party declaration files for faster builds.
+    "skipLibCheck": true,
+
+    /* Bundler mode */
+    // Resolve imports the way a bundler does: extensionless relative imports
+    // and honoring the "exports" field of package.json.
+    "moduleResolution": "bundler",
+    // Permit imports that spell out the .ts/.tsx extension (Vite supports this).
+    "allowImportingTsExtensions": true,
+    // Keep import/export statements exactly as written; type-only imports must
+    // use "import type", so unused value imports cannot sneak in.
+    "verbatimModuleSyntax": true,
+    // Treat every file as an ES module, even without import/export statements.
+    "moduleDetection": "force",
+    // Never emit JavaScript: "tsc -b" only type-checks, Vite does the build.
+    "noEmit": true,
+    // Transform JSX using React's automatic runtime (no `import React` needed).
+    "jsx": "react-jsx",
+
+    /* Linting */
+    // Flag declared-but-never-read local variables.
+    "noUnusedLocals": true,
+    // Flag declared-but-never-read function parameters.
+    "noUnusedParameters": true,
+    // Only allow TypeScript syntax that can be stripped without generating
+    // runtime code (no enums, namespaces, or parameter properties).
+    "erasableSyntaxOnly": true,
+    // Flag switch cases that fall through to the next case unintentionally.
+    "noFallthroughCasesInSwitch": true
+  },
+  // Type-check the application source with the options above.
+  "include": ["src"]
+}
