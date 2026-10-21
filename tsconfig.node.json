@@ -1,23 +1,41 @@
 {
   "compilerOptions": {
+    // Store incremental build state here so "tsc -b" can skip re-checking unchanged files.
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo",
+    // Treat the code as ES2023, matching the modern Node.js runtime that runs Vite.
     "target": "es2023",
+    // Include ES2023 built-ins only; these files run in Node, not the browser,
+    // so DOM types are deliberately absent.
     "lib": ["ES2023"],
+    // Only load Node.js' type definitions (e.g. process, path).
     "types": ["node"],
+    // Skip type-checking of third-party declaration files for faster builds.
     "skipLibCheck": true,
 
     /* Bundler mode */
+    // Use Node.js' native module resolution (package.json "type": "module").
     "module": "nodenext",
+    // Permit imports that spell out the .ts extension (Vite supports this).
     "allowImportingTsExtensions": true,
+    // Keep import/export statements exactly as written; type-only imports must
+    // use "import type", so unused value imports cannot sneak in.
     "verbatimModuleSyntax": true,
+    // Treat every file as an ES module, even without import/export statements.
     "moduleDetection": "force",
+    // Never emit JavaScript: "tsc -b" only type-checks, Vite does the build.
     "noEmit": true,
 
     /* Linting */
+    // Flag declared-but-never-read local variables.
     "noUnusedLocals": true,
+    // Flag declared-but-never-read function parameters.
     "noUnusedParameters": true,
+    // Only allow TypeScript syntax that can be stripped without generating
+    // runtime code (no enums, namespaces, or parameter properties).
     "erasableSyntaxOnly": true,
+    // Flag switch cases that fall through to the next case unintentionally.
     "noFallthroughCasesInSwitch": true
   },
+  // Only the Vite configuration is type-checked with these Node settings.
   "include": ["vite.config.ts"]
 }
