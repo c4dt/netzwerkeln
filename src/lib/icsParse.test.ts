@@ -204,7 +204,7 @@ describe('parseIcs', () => {
     ])
   })
 
-  it('does not treat the organizer as an attendee', () => {
+  it('treats the organizer as an attendee when they are not listed among the attendees', () => {
     const parsed = parseIcs(
       lines(
         'BEGIN:VEVENT',
@@ -214,8 +214,37 @@ describe('parseIcs', () => {
       ),
     )
 
-    expect(parsed.persons).toEqual([])
-    expect(parsed.events[0]).toMatchObject({ attendees: [] })
+    expect(parsed.events[0]).toMatchObject({ attendees: ['alice@example.com'] })
+    expect(parsed.persons).toEqual([
+      {
+        identifier: 'alice@example.com',
+        givenName: 'Alice',
+        familyName: 'Orga',
+        email: 'alice@example.com',
+      },
+    ])
+  })
+
+  it('does not add the organizer twice when they are already an attendee', () => {
+    const parsed = parseIcs(
+      lines(
+        'BEGIN:VEVENT',
+        'UID:listed@example.com',
+        'ATTENDEE:mailto:alice@example.com',
+        'ORGANIZER;CN=Alice Orga:mailto:alice@example.com',
+        'END:VEVENT',
+      ),
+    )
+
+    expect(parsed.events[0]).toMatchObject({ attendees: ['alice@example.com'] })
+    expect(parsed.persons).toEqual([
+      {
+        identifier: 'alice@example.com',
+        givenName: 'Alice',
+        familyName: 'Orga',
+        email: 'alice@example.com',
+      },
+    ])
   })
 
   it('skips events without a UID', () => {

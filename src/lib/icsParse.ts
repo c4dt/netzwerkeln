@@ -231,22 +231,28 @@ function parseEvent(properties: IcsProperty[]): {
       ? providedDuration
       : durationFromRange(startDate, endDate)
 
-  // Only ATTENDEE maps to schema.org's attendee; the organizer is a distinct
-  // iCalendar property and is deliberately not treated as an attendee.
   const attendees: Person[] = []
   const attendeeIdentifiers: string[] = []
-  for (const property of properties) {
-    if (property.name !== 'ATTENDEE') {
-      continue
-    }
-    const person = personFromAttendee(property)
+  const addAttendee = (property: IcsProperty) => {
+    const person = personFromContact(property)
     if (person === null) {
-      continue
+      return
     }
     attendees.push(person)
     if (!attendeeIdentifiers.includes(person.identifier)) {
       attendeeIdentifiers.push(person.identifier)
     }
+  }
+  for (const property of properties) {
+    if (property.name === 'ATTENDEE') {
+      addAttendee(property)
+    }
+  }
+  // The organizer counts as an attendee as well, unless they are already
+  // listed among the attendees.
+  const organizer = properties.find((property) => property.name === 'ORGANIZER')
+  if (organizer !== undefined) {
+    addAttendee(organizer)
   }
 
   return {
@@ -262,7 +268,8 @@ function parseEvent(properties: IcsProperty[]): {
   }
 }
 
-function personFromAttendee(property: IcsProperty): Person | null {
+/** Parse an ATTENDEE or ORGANIZER property into a person. */
+function personFromContact(property: IcsProperty): Person | null {
   const rawValue = property.value.trim()
   let email = ''
   if (rawValue.toLowerCase().startsWith('mailto:')) {
