@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
+import { clearDirectory, rebuildDirectory } from './directoryStore'
 
 /** Raw contents of one imported ICS calendar, kept for further processing. */
 export interface IcsEntry {
@@ -55,14 +56,19 @@ export function loadEntries(): IcsEntry[] {
   }
 }
 
-/** Overwrite the stored ICS entries. */
+/**
+ * Overwrite the stored ICS entries. The extracted persons/events directory is
+ * rebuilt from the given entries, so it always matches the stored raw data.
+ */
 export function saveEntries(entries: IcsEntry[]): void {
   window.localStorage.setItem(STORAGE_KEY, JSON.stringify(entries))
+  rebuildDirectory(entries)
 }
 
-/** Remove the stored ICS entries entirely. */
+/** Remove the stored ICS entries entirely, along with the extracted directory. */
 export function clearEntries(): void {
   window.localStorage.removeItem(STORAGE_KEY)
+  clearDirectory()
 }
 
 export function createEntry(input: IcsInput): IcsEntry {

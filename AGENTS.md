@@ -8,13 +8,22 @@ netzwerkeln constructs the user's social network from their calendars, built
 with Vite + React + TypeScript. Users import ICS files via upload or public
 URL; the raw contents are processed and stored entirely client-side in the
 browser's local storage (key `netzwerkeln:ics-entries`, see
-`src/lib/icsStore.ts`).
+`src/lib/icsStore.ts`). From the raw entries, `src/lib/icsParse.ts` extracts
+persons and events (schema.org Person/Event properties) and
+`src/lib/directoryStore.ts` stores them under the `netzwerkeln:directory`
+key; the directory is rebuilt from the raw entries on every change
+(`saveEntries`/`clearEntries`), so never write it independently of the raw
+entries.
 
 Application code lives in `src/` — `src/lib/` for logic and local storage,
 `src/components/` for UI components; configuration is at the repository root.
 
 Keep all user data client-side: never send stored calendar contents to a
 server.
+
+When processing calendar data, only derive values from the data itself; if a
+value cannot be found or derived, leave the field empty instead of inventing
+one.
 
 ## Essential commands
 

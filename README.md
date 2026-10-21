@@ -11,6 +11,9 @@ Vite, React, and TypeScript.
   store is updated and the form is reset
 - Raw ICS contents are stored locally in your browser (`localStorage`) for
   further processing; the UI lists everything you imported
+- People and events are extracted from the imported calendars (schema.org
+  Person/Event properties) into a local directory that is rebuilt whenever
+  the raw data changes
 - Your data never leaves this browser — a single action clears all stored
   calendars
 
