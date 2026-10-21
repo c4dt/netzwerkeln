@@ -1,6 +1,8 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+import type { Directory } from '../lib/directoryStore'
+import { loadDirectory } from '../lib/directoryStore'
 import { clearEntries, loadEntries } from '../lib/icsStore'
 import { ImportPanel } from './ImportPanel'
 
@@ -110,6 +112,34 @@ describe('ImportPanel', () => {
     } finally {
       vi.unstubAllGlobals()
     }
+  })
+
+  it('reports entry changes after the directory was rebuilt', async () => {
+    const seen: Directory[] = []
+    const onEntriesChange = vi.fn(() => {
+      seen.push(loadDirectory())
+    })
+    const user = userEvent.setup()
+    render(<ImportPanel onEntriesChange={onEntriesChange} />)
+
+    const icsWithAttendee =
+      'BEGIN:VCALENDAR\r\nBEGIN:VEVENT\r\nUID:event-1@example.com\r\nATTENDEE;CN="Doe, Jane":mailto:jane@example.com\r\nEND:VEVENT\r\nEND:VCALENDAR\r\n'
+    await user.upload(
+      screen.getByLabelText('Upload ICS files'),
+      new File([icsWithAttendee], 'meetings.ics', { type: 'text/calendar' }),
+    )
+
+    // The last notification already observed the freshly extracted directory.
+    await waitFor(() => {
+      expect(seen.at(-1)?.persons).toEqual([
+        {
+          identifier: 'jane@example.com',
+          givenName: 'Jane',
+          familyName: 'Doe',
+          email: 'jane@example.com',
+        },
+      ])
+    })
   })
 
   it('explains local storage and clears stored calendars', async () => {

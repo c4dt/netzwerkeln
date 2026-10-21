@@ -14,6 +14,10 @@ Vite, React, and TypeScript.
 - People and events are extracted from the imported calendars (schema.org
   Person/Event properties) into a local directory that is rebuilt whenever
   the raw data changes
+- The social network is visualised with Cytoscape.js: one node per person and
+  an edge between everyone who attended at least one meeting together; the
+  view updates on every import (zooming is the only interaction for now) and
+  explains how to get started when nothing is stored
 - Your data never leaves this browser — a single action clears all stored
   calendars
 
@@ -24,6 +28,7 @@ Vite, React, and TypeScript.
 | Vite            | Build tool and dev server                      |
 | React           | UI framework                                   |
 | TypeScript      | Static typing                                  |
+| Cytoscape.js    | Social network visualisation                   |
 | ESLint          | Linting (flat config, typescript-eslint)       |
 | Prettier        | Code formatting                                |
 | Vitest          | Unit testing                                   |

@@ -1,13 +1,27 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { ChangeEvent, FormEvent } from 'react'
 import { useIcsEntries } from '../lib/icsStore'
 
 type Status = { kind: 'idle' | 'busy' } | { kind: 'error'; message: string }
 
-export function ImportPanel() {
+interface ImportPanelProps {
+  /**
+   * Called whenever the stored entries changed and were persisted, so the
+   * parent can refresh anything derived from them (e.g. the directory).
+   */
+  onEntriesChange?: () => void
+}
+
+export function ImportPanel({ onEntriesChange }: ImportPanelProps) {
   const { entries, add, clear } = useIcsEntries()
   const [url, setUrl] = useState('')
   const [status, setStatus] = useState<Status>({ kind: 'idle' })
+
+  // Runs after the effect that persists the entries and rebuilds the
+  // directory, so the parent always sees the freshly extracted data.
+  useEffect(() => {
+    onEntriesChange?.()
+  }, [entries, onEntriesChange])
 
   async function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
     const files = [...(event.target.files ?? [])]
