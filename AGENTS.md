@@ -4,8 +4,17 @@ Guidance for AI coding agents (and humans) working on this repository.
 
 ## Project overview
 
-netzwerkeln is a networking app built with Vite + React + TypeScript.
-Application code lives in `src/`; configuration is at the repository root.
+netzwerkeln constructs the user's social network from their calendars, built
+with Vite + React + TypeScript. Users import ICS files via upload or public
+URL; the raw contents are processed and stored entirely client-side in the
+browser's local storage (key `netzwerkeln:ics-entries`, see
+`src/lib/icsStore.ts`).
+
+Application code lives in `src/` — `src/lib/` for logic and local storage,
+`src/components/` for UI components; configuration is at the repository root.
+
+Keep all user data client-side: never send stored calendar contents to a
+server.
 
 ## Essential commands
 

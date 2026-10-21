@@ -1,6 +1,18 @@
 # netzwerkeln
 
-A networking app built with Vite, React, and TypeScript.
+netzwerkeln constructs your social network from your calendars. Built with
+Vite, React, and TypeScript.
+
+## Features
+
+- Import calendars from local `.ics` files (multiple files at once) or from
+  public ICS URLs
+- Files and URLs are processed sequentially; after each import the local
+  store is updated and the form is reset
+- Raw ICS contents are stored locally in your browser (`localStorage`) for
+  further processing; the UI lists everything you imported
+- Your data never leaves this browser — a single action clears all stored
+  calendars
 
 ## Tech stack
 
