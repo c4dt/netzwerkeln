@@ -13,7 +13,11 @@ persons and events (schema.org Person/Event properties) and
 `src/lib/directoryStore.ts` stores them under the `netzwerkeln:directory`
 key; the directory is rebuilt from the raw entries on every change
 (`saveEntries`/`clearEntries`), so never write it independently of the raw
-entries.
+entries. `src/lib/network.ts` derives the social network from the directory
+(one node per person, an edge between all persons that attended at least one
+meeting together) and `src/components/NetworkView.tsx` renders it with
+Cytoscape; zooming in and out is the only interaction, and an empty
+directory shows a getting-started message instead of the network.
 
 Application code lives in `src/` — `src/lib/` for logic and local storage,
 `src/components/` for UI components; configuration is at the repository root.
